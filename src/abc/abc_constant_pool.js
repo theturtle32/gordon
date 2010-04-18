@@ -33,7 +33,7 @@ Gordon.ABCConstantPool.prototype = {
         var i, len;
 
         this.init();
-        len = str.readEncodedS32();
+        len = str.readEncodedU32();
         console.log("S32 Count: " + len);
         for (i = 1; i < len; i ++) {
             console.log("reading S32");
