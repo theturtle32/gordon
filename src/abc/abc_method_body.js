@@ -5,7 +5,7 @@ Gordon.ABCMethodBody = function() {
     this.initScopeDepth = null;
     this.maxScopeDepth = null;
     this.codeLength = null;
-    this.opcodes = null;
+    this.code = null;
     this.exceptionCount = null;
     this.exceptions = null;
     this.traitCount = null;
@@ -22,13 +22,40 @@ Gordon.ABCMethodBody.prototype = {
         this.maxScopeDepth = str.readEncodedU32();
         
         this.codeLength = str.readEncodedU32();
-        o = this.opcodes = [];
+        o = this.code = [];
         for (i=0; i < this.codeLength; i ++) {
-            var opcode = str.readUI8();
-            o.push({
-                name: Gordon.ABCInstructions.byOpcode[opcode],
+            var abci = Gordon.ABCInstructions,
+                opcode = str.readUI8();
+            var opcodeName = abci.byOpcode[opcode];
+            var opDefs = abci.operandDefinitions[opcodeName];
+            var obj = {
+                name: opcodeName,
                 opcode: opcode
-            });
+            }
+            if (opDefs) {
+                for each (var operandDef in opDefs) {
+                    switch (operandDef.type) {
+                        case "u30":
+                            obj[operandDef.name] = str.readEncodedU32();
+                            break;
+                        case "u8":
+                            obj[operandDef.name] = str.readUI8();
+                            break;
+                        case "s24":
+                            obj[operandDef.name] = str.readUI24();
+                            break;
+                        default:
+                            throw new Error("Unknown operand type: " + operandDef.type);
+                    }
+                    i++;          
+                }
+                if (opcodeName == "lookupswitch") {
+                    for (var j=0; j < obj.case_count; j++) {
+                        obj["case_"+j] = str.readUI24();
+                    }
+                }
+            }
+            o.push(obj);
         }
         
         this.exceptionCount = str.readEncodedU32();

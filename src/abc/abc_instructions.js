@@ -147,7 +147,477 @@ Gordon.extend(Gordon.ABCInstructions, {
         "typeof": 149,
         unshift: 167
     },
-    byOpcode: {}
+    byOpcode: {},
+    operandDefinitions: {
+        astype: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        call: [
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callmethod: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callproperty: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callproplex: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callpropvoid: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callstatic: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callsuper: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        callsupervoid: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        coerce: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        construct: [
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        constructprop: [
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        constructsuper: [
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        debug: [
+            {
+                name: "debug_type",
+                type: "u8"
+            },
+            {
+                name: "index",
+                type: "u30"
+            },
+            {
+                name: "reg",
+                type: "u8"
+            },
+            {
+                name: "extra",
+                type: "u30"
+            }
+        ],
+        debugfile: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        debugline: [
+            {
+                name: "linenum",
+                type: "u30"
+            }
+        ],
+        declocal: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        declocal_i: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        deleteproperty: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        dxns: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        findproperty: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        findpropstrict: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        getdescendants: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        getglobalslot: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        getlex: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        getlocal: [
+            {
+                name: "getlocal",
+                type: "u30"
+            }
+        ],
+        getproperty: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        getscopeobject: [
+            {
+                name: "index",
+                type: "u8"
+            }
+        ],
+        getslot: [
+            {
+                name: "slotindex",
+                type: "u30"
+            }
+        ],
+        getsuper: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        hasnext2: [
+            {
+                name: "object_reg",
+                type: "u30"
+            },
+            {
+                name: "index_reg",
+                type: "u30"
+            }
+        ],
+        ifeq: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        iffalse: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifge: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifgt: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifle: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        iflt: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifnge: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifngt: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifnle: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifnlt: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifne: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifstricteq: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        ifstrictne: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        iftrue: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        inclocal: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        inclocal_i: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        initproperty: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        istype: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        jump: [
+            {
+                name: "offset",
+                type: "s24"
+            }
+        ],
+        kill: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        // SPECIAL CASE!!
+        lookupswitch: [
+            {
+                name: "default_offset",
+                type: "s24"
+            },
+            {
+                name: "case_count",
+                type: "u30"
+            }
+            // There are case_count more s24 values...
+        ],
+        newarray: [
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        newcatch: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        newclass: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        newfunction: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        newobject: [
+            {
+                name: "arg_count",
+                type: "u30"
+            }
+        ],
+        pushbyte: [
+            {
+                name: "byte_value",
+                type: "u8"
+            }
+        ],
+        pushdouble: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        pushint: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        pushnamespace: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        pushshort: [
+            {
+                name: "value",
+                type: "u30"
+            }
+        ],
+        pushstring: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        pushuint: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        setlocal: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        setglobalslot: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        setproperty: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        setslot: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ],
+        setsuper: [
+            {
+                name: "index",
+                type: "u30"
+            }
+        ]
+    }
 });
 
 // Build inverse lookup
