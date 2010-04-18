@@ -10,6 +10,8 @@
             scale: Gordon.scaleValues.SHOW_ALL,
             bgcolor: null,
             renderer: null,
+            useNetwork: null,
+            hasMetadata: null,
             onprogress: function(percent){},
             onreadystatechange: function(state){},
             onenterframe: function(frameNum){}
@@ -30,10 +32,11 @@
             if(xhr.readyState == 2){ t._changeReadyState(s.LOADING); }
         }
         xhr.send(null);
-        if(200 != xhr.status){ throw new Error("Unable to load " + url + " status: " + xhr.status); }
+        if(200 != xhr.status && 0 != xhr.status){ throw new Error("Unable to load " + url + " status: " + xhr.status); }
         t._changeReadyState(s.LOADED);
         var d = t._dictionary = {},
             l = t._timeline = [];
+        t._framesByLabel = {};
         t._framesLoaded = 0;
         t.isPlaying = false;
         t.currentFrame = -1;
@@ -62,6 +65,10 @@
                     if(action){ eval("obj.action = function(){ (" + action + "(t)); }"); }
                     l.push(obj);
                     var n = ++t._framesLoaded;
+                    obj.frameNumber = n;
+                    if (obj.label) {
+                        t._framesByLabel[obj.label] = obj;
+                    }
                     t.onprogress(~~((n * 100) / t.totalFrames));
                     if(n == 1){
                         if(t.id){
@@ -134,6 +141,13 @@
             return t;
         },
         
+        goToLabel: function gl(label) {
+            var frameObj = this._framesByLabel[label];
+            if (frameObj) {
+                this.goTo(frameObj.frameNumber);
+            }
+        },
+        
         stop: function(){
             this.isPlaying = false;
             return this;
@@ -167,6 +181,14 @@
                     location.href = url;
             }
             return this;
+        },
+        
+        stopSounds: function() {
+            
+        },
+        
+        waitForFrame: function(frame, skipCount) {
+            
         },
         
         toggleQuality: function thq(){

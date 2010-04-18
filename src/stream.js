@@ -149,7 +149,7 @@ Gordon.Stream.prototype = {
             i = 5;
         while(i--){
             var num = this.readByteAt(this._offset++);
-            val = (val << 7) + (num & 0x7f);
+            val = (val << 7) | (num & 0x7f);
             if(!(num & 0x80)){ break; }
         }
         return val;

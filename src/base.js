@@ -1,4 +1,5 @@
 var Gordon = {
+    debug: window.console && window.console.log,
     qualityValues: {
         LOW: "low",
         AUTO_LOW: "autolow",
@@ -56,6 +57,7 @@ var Gordon = {
         DEFINE_BITS_LOSSLESS2: 36,
         DEFINE_EDIT_TEXT: 37,
         DEFINE_SPRITE: 39,
+        PRODUCT_INFO: 41,
         FRAME_LABEL: 43,
         SOUND_STREAM_HEAD2: 45,
         DEFINE_MORPH_SHAPE: 46,
@@ -89,6 +91,7 @@ var Gordon = {
         DEFINE_BITS_JPEG4: 90,
         DEFINE_FONT4: 91
     },
+    // tagNames and tagHandlers generated from tagCodes
     tagNames: {},
     tagHandlers: {},
     fillStyleTypes: {
@@ -165,6 +168,7 @@ var Gordon = {
     var t = Gordon.tagCodes,
         n = Gordon.tagNames,
         h = Gordon.tagHandlers;
+    // generate tagHandlers and tagNames
     for(var name in t){
         var code = t[name];
         n[code] = name;

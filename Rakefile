@@ -2,7 +2,31 @@ src_dir = 'src'
 vendor_dir = 'vendor'
 dist_dir = 'dist'
 build_dir = 'build'
-base_names = [ 'base', 'movie', 'parser', 'stream', 'svg_renderer', 'vendor' ]
+base_names = [
+  'base',
+  'object_utils',
+  'movie',
+  'parser',
+  'stream',
+  'svg_renderer',
+  'vendor',
+  'abc/abc_stream',
+  'abc/abc_file',
+  'abc/abc_parser',
+  'abc/abc_constant_pool',
+  'abc/abc_method_signature',
+  'abc/abc_namespace',
+  'abc/abc_namespace_set',
+  'abc/abc_multiname',
+  'abc/abc_metadata',
+  'abc/abc_instance',
+  'abc/abc_class',
+  'abc/abc_trait',
+  'abc/abc_script',
+  'abc/abc_method_body',
+  'abc/abc_exception',
+  'abc/abc_instructions'
+]
 base_files = base_names.map { |file| File.join(src_dir, file + '.js') }
 intro = File.join(src_dir, 'intro.js')
 outro = File.join(src_dir, 'outro.js')

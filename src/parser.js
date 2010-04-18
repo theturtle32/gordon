@@ -1,7 +1,7 @@
 (function(){
     var useNativeJson = !!global.JSON;
     
-    if(doc && global.Worker){
+    if(false && doc && global.Worker){
         var REGEXP_SCRIPT_SRC = /(^|.*\/)gordon.(min\.)?js$/;
         
         var scripts = doc.getElementsByTagName("script"),
@@ -37,12 +37,12 @@
             var sign = s.readString(3),
                 v = Gordon.validSignatures;
             if(sign != v.SWF && sign != v.COMPRESSED_SWF){ throw new Error(url + " is not a SWF movie file"); }
-            var version = s.readUI8(),
-                fileLen = s.readUI32();
+            this.version = s.readUI8();
+            var fileLen = s.readUI32();
             if(sign == v.COMPRESSED_SWF){ s.decompress(); }
             this.ondata({
                 type: "header",
-                version: version,
+                version: this.version,
                 fileLength: fileLen,
                 frameSize: s.readRect(),
                 frameRate: s.readUI16() / 256,
@@ -53,16 +53,27 @@
             do{
                 currFrame = {
                     type: "frame",
-                    displayList: {}
+                    label: null,
+                    displayList: {},
+                    namedAnchor: false
                 };
                 do{
                     var hdr = s.readUI16(),
                           code = hdr >> 6,
                           len = hdr & 0x3f;
                     if(len >= 0x3f){ len = s.readUI32(); }
+                    // Resolve the handler function name
                     var handl = h[code];
-                    if(this[handl]){ this[handl](s.tell(), len); }
-                    else{ s.seek(len); }
+                    // Execute the proper handler for this tag type
+                    if(this[handl]){ 
+                        if (Gordon.debug) {console.log("Handling tag " + code + ": " + Gordon.tagNames[code]);}
+                        this[handl](s.tell(), len);
+                    }
+                    // If we don't have one, skip the tag.
+                    else{ 
+                        if (Gordon.debug) {console.log("Skipping unknown tag " + code + ": " + Gordon.tagNames[code]);}
+                        s.seek(len);
+                    }
                 }while(code && code != f);
             }while(code);
         };
@@ -474,6 +485,7 @@
             _readAction: function(){
                 var stack = [];
                 do{
+                    var frame, label, skipCount, url, target, escaped;
                     var code = s.readUI8(),
                         len = code > 0x80 ? s.readUI16() : 0,
                         a = Gordon.actionCodes;
@@ -491,16 +503,31 @@
                             stack.push("t.prev()");
                             break;
                         case a.GOTO_FRAME:
-                            var frame = s.readUI16();
+                            frame = s.readUI16();
                             stack.push("t.goTo(" + frame + ')');
                             break;
+                        case a.GOTO_LABEL:
+                            label = s.readString();
+                            escaped = label.replace(/'/g, "\\'");
+                            stack.push("t.goToLabel('" + escaped + "')")
+                            break;
                         case a.GET_URL:
-                            var url = s.readString(),
-                                target = s.readString();
+                            url = s.readString();
+                            target = s.readString();
+                            var escapedUrl = url.replace(/'/g, "\\'");
+                            var escapedTarget = target.replace(/'/g, "\\'");
                             stack.push("t.getURL('" + url + "', '" + target + "')");
                             break;
                         case a.TOGGLE_QUALITY:
                             stack.push("t.toggleQuality()");
+                            break;
+                        case a.STOP_SOUNDS:
+                            stack.push("t.stopSounds()");
+                            break;
+                        case a.WAIT_FOR_FRAME:
+                            frame = s.readUI16();
+                            skipCount = s.readUI8();
+                            stack.push("t.waitForFrame(" + frame + ", " + skipCount + ")");
                             break;
                         default:
                             s.seek(len);
@@ -730,6 +757,87 @@
             _handleProtect: function(offset, len){
                 s.seek(len);
                 return this;
+            },
+            
+            _handleFrameLabel: function(offset, len){
+                console.log("File version: " + this.version)
+                if (this.version >= 6) {
+                    currFrame.label = s.readString(len-1);
+                    currFrame.namedAnchor = Boolean(s.readUI8());
+                }
+                else {
+                    currFrame.label = s.readString();
+                }
+                if (Gordon.debug) {
+                    console.log("Frame Label: " + currFrame.label);
+                    if (currFrame.namedAnchor) {
+                        console.log("-- Is a named anchor");
+                    }
+                }
+            },
+            
+            _handleFileAttributes: function(){
+                // SWF 8 tag, but can be included in all versions
+                var reserved1     = s.readUB(1), // must be 0
+                    useDirectBlit = s.readUB(1),
+                    useGPU        = s.readUB(1),
+                    hasMetadata   = s.readUB(1),
+                    actionScript3 = s.readUB(1),
+                    reserved2     = s.readUB(2), // must be 0
+                    useNetwork    = s.readUB(1),
+                    reserved3     = s.readUB(24); // must be 0
+                if (Gordon.debug) {
+                    console.log("Has Metadata: " + hasMetadata);
+                    console.log("Uses AS3: " + actionScript3);
+                }
+            },
+            
+            _handleMetadata: function(offset, len){
+                var metadata = s.readString(len);
+                if (Gordon.debug) {
+                    console.log("Metadata: " + metadata);
+                }
+            },
+            
+            _handleScriptLimits: function(offset, len){
+                var maxRecursionDepth    = s.readUI16(),
+                    scriptTimeoutSeconds = s.readUI16();
+                if (Gordon.debug) {
+                    console.log("Max Recursion Depth: " + maxRecursionDepth +
+                                ", Script Timeout Seconds: " + scriptTimeoutSeconds);
+                }
+            },
+            
+            _handleSymbolClass: function(offset, len){
+                var numSymbols = s.readUI16();
+                var symbols = [];
+                for (var i=0; i < numSymbols; i ++) {
+                    symbols.push({
+                        tag: s.readUI16(),
+                        name: s.readString()
+                    });
+                }
+                if (Gordon.debug) {
+                    console.log("Got SymbolClass definitions.", symbols);
+                }
+            },
+            
+            _handleDoAbc: function(offset, len){
+                var flags = s.readUI32(),
+                    name  = s.readString(),
+                    data  = s.readString(len - 4 - (name.length + 1));
+                if (Gordon.debug) {
+                    console.log("ABC Block.  Flags: " + flags + ", Name: " + name + " Data Length: " + data.length);
+                }
+                var parser = new Gordon.ABCParser(name, flags, data);
+                var script = parser.parse();
+            },
+            
+            _handleEnd: function() {
+                // file end
+                if (Gordon.debug) {
+                    console.log("File end tag reached");
+                }
             }
         };
         
