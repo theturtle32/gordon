@@ -145,11 +145,10 @@ Gordon.Stream.prototype = {
     },
     
     readEncodedU32: function(){
-        var val = 0,
-            i = 5;
-        while(i--){
+        var val = 0;
+        for (var i=0; i < 5; i++) {
             var num = this.readByteAt(this._offset++);
-            val = (val << 7) | (num & 0x7f);
+            val = val | ((num & 0x7f) << (7 * i));
             if(!(num & 0x80)){ break; }
         }
         return val;
