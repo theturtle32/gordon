@@ -1,8 +1,10 @@
 Gordon.ABCInstance = function() {
     this.nameIndex = null;
     this.name = null; // a multiname
+    this.superNameIndex = null;
     this.superName = null;
     this.flags = null;
+    this.protectedNamespaceIndex = null;
     this.protectedNamespace = null;
     this.interfaceCount = null;
     this.interfaceIds = null;
@@ -16,9 +18,13 @@ Gordon.ABCInstance.prototype = {
         var i;
         this.nameIndex = str.readEncodedU32();
         this.name = abcfile.constantPool.multinames[this.nameIndex];
-        this.superName = str.readEncodedU32();
+        this.superNameIndex = str.readEncodedU32();
+        this.superName = abcfile.constantPool.multinames[this.superNameIndex];
         this.flags = str.readUI8();
-        this.protectedNamespace = str.readEncodedU32();
+        if (this.flags & Gordon.ABCClass.CLASS_PROTECTED_NAMESPACE) {
+            this.protectedNamespaceIndex = str.readEncodedU32();
+            this.protectedNamespace = abcfile.constantPool.namespaces[this.protectedNamespaceIndex];
+        }
         this.interfaceCount = str.readEncodedU32();
         
         this.interfaceIds = [];

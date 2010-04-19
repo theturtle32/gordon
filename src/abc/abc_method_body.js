@@ -28,30 +28,40 @@ Gordon.ABCMethodBody.prototype = {
                 opcode = str.readUI8();
             var opcodeName = abci.byOpcode[opcode];
             var opDefs = abci.operandDefinitions[opcodeName];
+            var operand;
             var obj = {
                 name: opcodeName,
-                opcode: opcode
+                opcode: opcode,
+                operands: []
             }
             if (opDefs) {
                 for each (var operandDef in opDefs) {
+                    operand = {
+                        name: operandDef.name
+                    };
                     switch (operandDef.type) {
                         case "u30":
-                            obj[operandDef.name] = str.readEncodedU32();
+                            operand["value"] = str.readEncodedU32();
                             break;
                         case "u8":
-                            obj[operandDef.name] = str.readUI8();
+                            operand["value"] = str.readUI8();
                             break;
                         case "s24":
-                            obj[operandDef.name] = str.readUI24();
+                            operand["value"] = str.readUI24();
                             break;
                         default:
                             throw new Error("Unknown operand type: " + operandDef.type);
                     }
+                    obj.operands.push(operand);
                     i++;          
                 }
                 if (opcodeName == "lookupswitch") {
                     for (var j=0; j < obj.case_count; j++) {
-                        obj["case_"+j] = str.readUI24();
+                        operand = {
+                            name: "case_" + j,
+                            value: str.readUI24()
+                        };
+                        obj.operands.push(operand);
                     }
                 }
             }

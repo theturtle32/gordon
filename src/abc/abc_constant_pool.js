@@ -19,6 +19,17 @@ cp.CONSTANT_EXPLICIT_NAMESPACE = 0x19;
 cp.CONSTANT_STATIC_PROTECTED_NAMESPACE = 0x1A;
 cp.CONSTANT_PRIVATE_NAMESPACE = 0x05;
 
+function outputBits(val) {
+    var bitMask = 0x80000000;
+    var string = "";
+    for (var i=0; i < 32; i++) {
+        string += (val & bitMask) ? "1" : "0";
+        bitMask >>= 1;
+        bitMask &= 0x7FFFFFFF;
+    }
+    console.log(string);
+}
+
 Gordon.ABCConstantPool.prototype = {
     init: function() {
         this.integers = [ 0 ];
@@ -36,8 +47,9 @@ Gordon.ABCConstantPool.prototype = {
         len = str.readEncodedU32();
         console.log("S32 Count: " + len);
         for (i = 1; i < len; i ++) {
-            console.log("reading S32");
-            this.integers.push(str.readEncodedS32());
+            var s32value = str.readEncodedU32();
+            this.integers.push(s32value);
+            console.log("Read s32: " + s32value );
         }
         
         len = str.readEncodedU32();

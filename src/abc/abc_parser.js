@@ -64,6 +64,10 @@ Gordon.ABCParser.prototype = {
         if (Gordon.debug) {
             console.log(abcfile);
         }
+        
+        var writer = new Gordon.JSScriptWriter(abcfile, "testNS");
+        writer.writeScript(abcfile.scripts[abcfile.scripts.length-1]);
+        
         return script;
     }
 };
