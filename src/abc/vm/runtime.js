@@ -92,11 +92,11 @@ Gordon.abc.vm.OperandStack.prototype = {
         this._pos = 0;
     },
     push: function(item) {
-        this._stack[this.pos++] = item;
+        this._stack[this._pos++] = item;
     },
     pop: function() {
         var item = this._stack[--this.pos];
-        this._stack[this.pos] = undefined;
+        this._stack[this._pos] = undefined;
         return item;
     },
     release: function() {
