@@ -8,7 +8,7 @@ Gordon.abc.vm.Stack = {
             stack.init();
             return stack;
         }
-        return new Gordon.abc.vm.ScopeStack();
+        return new Gordon.abc.vm.ScopeStack(maxDepth);
     },
     returnScopeStack: function(stack) {
         scopeStackPool.push(stack);
@@ -24,6 +24,7 @@ Gordon.abc.vm.Stack = {
         if (pool.length) {
             var stack = pool.pop();
             stack.init();
+            return stack;
         }
         return new Gordon.abc.vm.OperandStack(maxDepth);
     },
