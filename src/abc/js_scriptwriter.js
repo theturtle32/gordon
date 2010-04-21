@@ -55,7 +55,7 @@ Gordon.JSScriptWriter.prototype = {
     
     _writeMethodInit: function(methodBody) {
         var str = "var vm = Gordon.abc.vm, " +
-                  "var instr = vm.instructions, " +
+                  "instr = vm.instructions, " +
                   "register0 = this, ";
         // init proper number of registers
         for (var i=1; i < methodBody.localCount; i++) {
