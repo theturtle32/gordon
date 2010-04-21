@@ -26,7 +26,8 @@ base_names = [
   'abc/abc_method_body',
   'abc/abc_exception',
   'abc/abc_instructions',
-  'abc/js_scriptwriter'
+  'abc/js_scriptwriter',
+  'abc/vm/runtime'
 ]
 base_files = base_names.map { |file| File.join(src_dir, file + '.js') }
 intro = File.join(src_dir, 'intro.js')

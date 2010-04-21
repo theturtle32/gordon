@@ -13,7 +13,7 @@ Gordon.ABCMethodBody = function() {
 };
 Gordon.ABCMethodBody.prototype = {
     parse: function(str, abcfile) {
-        var o, i;
+        var o, i, j, len;
         console.log("Parsing method body");
         this.methodIndex = str.readEncodedU32();
         this.maxStack = str.readEncodedU32();
@@ -27,15 +27,16 @@ Gordon.ABCMethodBody.prototype = {
             var abci = Gordon.ABCInstructions,
                 opcode = str.readUI8();
             var opcodeName = abci.byOpcode[opcode];
-            var opDefs = abci.operandDefinitions[opcodeName];
+            var operandDefs = abci.operandDefinitions[opcodeName];
             var operand;
             var obj = {
                 name: opcodeName,
                 opcode: opcode,
                 operands: []
-            }
-            if (opDefs) {
-                for each (var operandDef in opDefs) {
+            };
+            if (operandDefs) {
+                for (j=0,len=operandDefs.length; j < len; j++) {
+                    var operandDef = operandDefs[j];
                     operand = {
                         name: operandDef.name
                     };
@@ -50,9 +51,10 @@ Gordon.ABCMethodBody.prototype = {
                             operand["value"] = str.readUI24();
                             break;
                         default:
-                            throw new Error("Unknown operand type: " + operandDef.type);
+                            throw new Error("Unknown operand type: " + operandDef.kind + " for operand name: " + operandDef.name);
                     }
                     obj.operands.push(operand);
+                    obj[operand.name] = operand.value;
                     i++;          
                 }
                 if (opcodeName == "lookupswitch") {

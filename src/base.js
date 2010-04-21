@@ -1,5 +1,8 @@
 var Gordon = {
     debug: window.console && window.console.log,
+    abc: {
+        vm: {}
+    },
     qualityValues: {
         LOW: "low",
         AUTO_LOW: "autolow",

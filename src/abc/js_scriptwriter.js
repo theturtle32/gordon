@@ -2,47 +2,57 @@ Gordon.JSScriptWriter = function(abcfile, jsNamespace) {
     this.abcfile = abcfile;
     this.jsNamespace = jsNamespace;
     this.script = "";
+    this.indentAmount = 0;
 };
 Gordon.JSScriptWriter.prototype = {
     writeClass: function(classObj) {
         
     },
+    indent: function(amount) {
+        this.indentAmount += amount;
+    },
+    writeLine: function(output) {
+        for (var i=0; i < this.indentAmount; i++) {
+            this.script += "  ";
+        }
+        this.script += (output + "\n");
+    },
     writeScript: function(scriptObj) {
-        var i;
+        var i, str;
         scriptObj.initMethodBody = this.abcfile.methodBodies[scriptObj.init];
         
-        var scr = "function(";
         var params = [];
         for (i=0; i < scriptObj.initMethod.paramCount; i++) {
             params.push("param"+i);
         }
-        scr += params.join(",");
-        scr += ") {\n";
-        scr += "  " + this._methodInit(scriptObj.initMethodBody);
+        this.writeLine("function(" + params.join(",") + ") {");
+        this.indent(1);
+        this._writeMethodInit(scriptObj.initMethodBody);
 
-        for each (var op in scriptObj.initMethodBody.code) {
+        for (var opIndex in scriptObj.initMethodBody.code) {
+            var op = scriptObj.initMethodBody.code[opIndex];
             var generator = this["gen_"+op.name];
             if (generator) {
-                scr += "  " + generator.apply(this, [op.operands]) + "\n";
+                this.writeLine(generator.apply(this, [op.operands]));
             }
             else {
-                scr += "  " + op.name + "();\n";
+                this.writeLine("// " + op.name + "();");
             }
         }
-        
-        scr += "}";
-        console.log(scr);
+        this.indent(-1);
+        this.writeLine("}");
     },
     
-    _methodInit: function(methodBody) {
-        var str = "var register0 = this, ";
+    _writeMethodInit: function(methodBody) {
+        var str = "var vm = Gordon.abc.vm, " +
+                  "register0 = this, ";
         // init proper number of registers
         for (var i=1; i < methodBody.localCount; i++) {
             str += ("register"+i+" = null, ");
         }
-        str += "opstack = new Array(" + methodBody.maxStack + "), " +
-               "scopestack = new Array(" + methodBody.maxScopeDepth + ");\n";
-        return str;
+        str += "opstack = vm.Stack.getOperandStack(" + methodBody.maxStack + "), " +
+               "scopestack = vm.Stack.getScopeStack(" + methodBody.maxScopeDepth + ");";
+        this.writeLine(str);
     },
     
     // Opcode Writers

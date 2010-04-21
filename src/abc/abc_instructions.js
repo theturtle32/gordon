@@ -628,4 +628,4 @@ for (var name in Gordon.ABCInstructions.byName) {
 
 Gordon.ABCInstructions.prototype = {
     
-}
+};
