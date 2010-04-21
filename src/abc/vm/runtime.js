@@ -17,14 +17,14 @@ Gordon.abc.vm.Stack = {
         var pool;
         if (this.opStackPool[maxDepth]) {
             pool = this.opStackPool[maxDepth];
+            if (pool.length) {
+                var stack = pool.pop();
+                stack.init();
+                return stack;
+            }
         }
         else {
             pool = this.opStackPool[maxDepth] = [];
-        }
-        if (pool.length) {
-            var stack = pool.pop();
-            stack.init();
-            return stack;
         }
         return new Gordon.abc.vm.OperandStack(maxDepth);
     },
