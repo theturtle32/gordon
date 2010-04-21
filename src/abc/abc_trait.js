@@ -30,7 +30,6 @@ Gordon.extend(Gordon.ABCTrait, {
 });
 Gordon.ABCTrait.prototype = {
     parse: function(str, abcfile) {
-        console.log("Parsing trait");
         var i, attr, traitType,
             c = Gordon.ABCTrait;
         this.nameIndex = str.readEncodedU32();

@@ -1,10 +1,13 @@
 Gordon.JSScriptWriter = function(abcfile, jsNamespace) {
     this.abcfile = abcfile;
     this.jsNamespace = jsNamespace;
-    this.script = "";
-    this.indentAmount = 0;
+    this.reset();
 };
 Gordon.JSScriptWriter.prototype = {
+    reset: function() {
+        this.script = "";
+        this.indentAmount = 0;
+    },
     writeClass: function(classObj) {
         
     },
@@ -18,22 +21,25 @@ Gordon.JSScriptWriter.prototype = {
         this.script += (output + "\n");
     },
     writeScript: function(scriptObj) {
-        var i, str;
         scriptObj.initMethodBody = this.abcfile.methodBodies[scriptObj.init];
+        this.writeMethod(scriptObj.initMethod, scriptObj.initMethodBody);
+    },
+    writeMethod: function(method, methodBody) {
+        var i, str;
         
         var params = [];
-        for (i=0; i < scriptObj.initMethod.paramCount; i++) {
+        for (i=0; i < method.paramCount; i++) {
             params.push("param"+i);
         }
         this.writeLine("function(" + params.join(",") + ") {");
         this.indent(1);
-        this._writeMethodInit(scriptObj.initMethodBody);
+        this._writeMethodInit(methodBody);
 
-        for (var opIndex in scriptObj.initMethodBody.code) {
-            var op = scriptObj.initMethodBody.code[opIndex];
+        for (var opIndex in methodBody.code) {
+            var op = methodBody.code[opIndex];
             var generator = this["gen_"+op.name];
             if (generator) {
-                this.writeLine(generator.apply(this, [op.operands]));
+                generator.apply(this, [op]);
             }
             else {
                 this.writeLine("// " + op.name + "();");
@@ -43,8 +49,13 @@ Gordon.JSScriptWriter.prototype = {
         this.writeLine("}");
     },
     
+    _writeMethodClose: function() {
+        this.writeLine('opstack.release(); scopestack.release();');
+    },
+    
     _writeMethodInit: function(methodBody) {
         var str = "var vm = Gordon.abc.vm, " +
+                  "var instr = vm.instructions, " +
                   "register0 = this, ";
         // init proper number of registers
         for (var i=1; i < methodBody.localCount; i++) {
@@ -57,25 +68,46 @@ Gordon.JSScriptWriter.prototype = {
     
     // Opcode Writers
     gen_getlocal_0: function() {
-        return "opstack.push(register0);";
+        this.writeLine("opstack.push(register0);");
     },
     gen_getlocal_1: function() {
-        return "opstack.push(register1);";
+        this.writeLine("opstack.push(register1);");
     },
     gen_getlocal_2: function() {
-        return "opstack.push(register2);";
+        this.writeLine("opstack.push(register2);");
     },
     gen_getlocal_3: function() {
-        return "opstack.push(register3);";
+        this.writeLine("opstack.push(register3);");
+    },
+    gen_setlocal_1: function() {
+        this.writeLine("register1 = opstack.pop();")
+    },
+    gen_setlocal_2: function() {
+        this.writeLine("register2 = opstack.pop();")
+    },
+    gen_setlocal_3: function() {
+        this.writeLine("register3 = opstack.pop();")
+    },
+    gen_setlocal_4: function() {
+        this.writeLine("register4 = opstack.pop();")
     },
     gen_pushscope: function() {
-        return "scopestack.push(opstack.pop());";
+        this.writeLine("scopestack.push(opstack.pop());");
     },
     gen_popscope: function() {
-        return "scopestack.pop();";
+        this.writeLine("scopestack.pop();");
     },
     gen_initproperty: function(o) {
-        var property = this.abcfile.constantPool.multinames[o[0].value];
-        return "(function() { var value = opstack.pop(); var obj = opstack.pop(); obj['" + property.name + "'] = value; })();";
+        var property = this.abcfile.constantPool.multinames[o.index];
+        this.writeLine("(function() { var value = opstack.pop(); var obj = opstack.pop(); obj['" + property.name + "'] = value; })();");
+    },
+    gen_returnvoid: function() {
+        this._writeMethodClose();
+    },
+    gen_pushbyte: function(o) {
+        this.writeLine("opstack.push(" + o.byte_value + ");");
+    },
+    gen_add: function() {
+        this.writeLine("opstack.push(opstack.pop() + opstack.pop());");
     }
 };

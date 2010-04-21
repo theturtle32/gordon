@@ -5,6 +5,7 @@ Gordon.ABCMethodSignature = function() {
     this.nameIndex = null;
     this.name = null;
     this.flags = null;
+    this.flagByte = null;
     this.options = null;
     this.paramNameIds = null;
     this.paramNames = null;
@@ -20,8 +21,8 @@ Gordon.ABCMethodSignature.flags = {
 Gordon.ABCMethodSignature.prototype = {
     parse: function(str, abcfile) {
         var i,
+            f = Gordon.ABCMethodSignature.flags,
             pool = abcfile.constantPool;
-        console.log("Parsing method signature");
         this.paramCount = str.readEncodedU32();
         this.returnType = str.readEncodedU32();
         this.paramTypes = [];
@@ -30,10 +31,18 @@ Gordon.ABCMethodSignature.prototype = {
         }
         this.nameIndex = str.readEncodedU32();
         this.name = pool.strings[this.nameIndex];
-        this.flags = str.readUI8();
+        this.flagByte = str.readUI8();
+        this.flags = {
+            needArguments: Boolean(this.flagByte & f.NEED_ARGUMENTS),
+            needActivation: Boolean(this.flagByte & f.NEED_ACTIVATION),
+            needRest: Boolean(this.flagByte & f.NEED_REST),
+            hasOptional: Boolean(this.flagByte & f.HAS_OPTIONAL),
+            setDXNS: Boolean(this.flagByte & f.SET_DXNS),
+            hasParamNames: Boolean(this.flagByte & f.HAS_PARAM_NAMES)
+        };
         
         this.options = [];
-        if (this.flags & Gordon.ABCMethodSignature.flags.HAS_OPTIONAL) {
+        if (this.flags.hasOptional) {
             var optionCount = str.readEncodedU32();
             for (i=0; i < optionCount; i ++) {
                 this.options.push({
@@ -45,7 +54,7 @@ Gordon.ABCMethodSignature.prototype = {
         
         this.paramNameIds = [];
         this.paramNames = [];
-        if (this.flags & Gordon.ABCMethodSignature.flags.HAS_PARAM_NAMES) {
+        if (this.flags.hasParamNames) {
             for (i=0; i < this.paramCount; i++) {
                 var nameId = str.readEncodedU32();
                 this.paramNameIds.push(nameId);

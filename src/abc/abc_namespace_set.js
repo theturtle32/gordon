@@ -6,7 +6,6 @@ Gordon.ABCNamespaceSet = function() {
 
 Gordon.ABCNamespaceSet.prototype = {
     parse: function(str) {
-        console.log("parsing namespace set");
         this.count = str.readEncodedU32();
         for (var i = 0; i < this.count; i ++) {
             this.nsIndices.push(str.readEncodedU32());

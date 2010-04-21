@@ -9,7 +9,6 @@ Gordon.ABCScript = function() {
 };
 Gordon.ABCScript.prototype = {
     parse: function(str, abcfile) {
-        console.log("parsing script");
         this.init = str.readEncodedU32();
         this.initMethod = abcfile.methods[this.init];
         this.traitCount = str.readEncodedU32();

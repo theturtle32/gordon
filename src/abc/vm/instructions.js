@@ -1,0 +1,2 @@
+Gordon.abc.vm.instructions = {
+};

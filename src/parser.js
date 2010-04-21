@@ -760,7 +760,6 @@
             },
             
             _handleFrameLabel: function(offset, len){
-                console.log("File version: " + this.version)
                 if (this.version >= 6) {
                     currFrame.label = s.readString(len-1);
                     currFrame.namedAnchor = Boolean(s.readUI8());

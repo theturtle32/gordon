@@ -589,8 +589,6 @@ function zip_inflate_dynamic(buff, off, size) {
     if(zip_bl == 0)	// no literals or lengths
 	h.status = 1;
     if(h.status != 0) {
-	if(h.status == 1)
-	    ;// **incomplete literal tree**
 	return -1;		// incomplete code set
     }
     zip_tl = h.root;
@@ -608,9 +606,6 @@ function zip_inflate_dynamic(buff, off, size) {
 	return -1;
     }
 
-    if(h.status == 1) {
-	;// **incomplete distance tree**
-    }
     if(h.status != 0)
 	return -1;
 

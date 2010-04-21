@@ -36,7 +36,13 @@ Gordon.ABCConstantPool.prototype = {
         this.uintegers = [ 0 ];
         this.doubles = [ NaN ];
         this.strings = [ "" ];
-        this.namespaces = [ { name: "*", kind: Gordon.ABCNamespace.NAMESPACE } ];
+        this.namespaces = [
+            {
+                name: "*",
+                kind: Gordon.ABCNamespace.NAMESPACE,
+                kindDescription: "NAMESPACE"
+            }
+        ];
         this.nsSets = [ null ];
         this.multinames = [ null ];  
     },
@@ -45,31 +51,24 @@ Gordon.ABCConstantPool.prototype = {
 
         this.init();
         len = str.readEncodedU32();
-        console.log("S32 Count: " + len);
         for (i = 1; i < len; i ++) {
             var s32value = str.readEncodedU32();
             this.integers.push(s32value);
-            console.log("Read s32: " + s32value );
         }
         
         len = str.readEncodedU32();
-        console.log("U32 Count: " + len);
         for (i = 1; i < len; i ++) {
-            console.log("reading U32");
             this.uintegers.push(str.readEncodedU32());
         }
         
         len = str.readEncodedU32();
-        console.log("Double Count: " + len);
         for (i = 1; i < len; i ++) {
             console.log("Reading double");
             this.doubles.push(str.readDouble());
         }
         
         len = str.readEncodedU32();
-        console.log("StringCount: " + len);
         for (i = 1; i < len; i ++) {
-            console.log("Reading string");
             var strLen = str.readEncodedU32();
             if (strLen == 0) {
                 this.strings.push("");
@@ -80,7 +79,6 @@ Gordon.ABCConstantPool.prototype = {
         }
         
         len = str.readEncodedU32();
-        console.log("NameSpace Count: " + len);
         for (i = 1; i < len; i ++) {
             var ns = new Gordon.ABCNamespace();
             ns.parse(str);
@@ -89,7 +87,6 @@ Gordon.ABCConstantPool.prototype = {
         }
         
         len = str.readEncodedU32();
-        console.log("Namespace Set Count: " + len);
         for (i = 1; i < len; i ++) {
             var nsSet = new Gordon.ABCNamespaceSet();
             nsSet.parse(str);
@@ -98,7 +95,6 @@ Gordon.ABCConstantPool.prototype = {
         }
         
         len = str.readEncodedU32();
-        console.log("Multiname Count: " + len);
         for (i = 1; i < len; i ++) {
             var multiname = new Gordon.ABCMultiname();
             multiname.parse(str);

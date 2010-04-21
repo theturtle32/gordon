@@ -14,7 +14,6 @@ Gordon.ABCMethodBody = function() {
 Gordon.ABCMethodBody.prototype = {
     parse: function(str, abcfile) {
         var o, i, j, len;
-        console.log("Parsing method body");
         this.methodIndex = str.readEncodedU32();
         this.maxStack = str.readEncodedU32();
         this.localCount = str.readEncodedU32();

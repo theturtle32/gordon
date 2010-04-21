@@ -8,44 +8,59 @@ Gordon.ABCMultiname = function() {
     this.nsSet = null;
 };
 
-Gordon.ABCMultiname.QNAME = 0x07;
-Gordon.ABCMultiname.QNAME_A = 0x0D;
-Gordon.ABCMultiname.RTQNAME = 0x0F;
-Gordon.ABCMultiname.RTQNAME_A = 0x10;
-Gordon.ABCMultiname.RTQNAME_L = 0x11;
-Gordon.ABCMultiname.RTQNAME_LA = 0x12;
-Gordon.ABCMultiname.MULTINAME = 0x09;
-Gordon.ABCMultiname.MULTINAME_A = 0x0E;
-Gordon.ABCMultiname.MULTINAME_L = 0x1B;
-Gordon.ABCMultiname.MULTINAME_LA = 0x1C;
+Gordon.extend(Gordon.ABCMultiname, {
+    QNAME: 0x07,
+    QNAME_A: 0x0D,
+    RTQNAME: 0x0F,
+    RTQNAME_A: 0x10,
+    RTQNAME_L: 0x11,
+    RTQNAME_LA: 0x12,
+    MULTINAME: 0x09,
+    MULTINAME_A: 0x0E,
+    MULTINAME_L: 0x1B,
+    MULTINAME_LA: 0x1C
+});
+Gordon.ABCMultiname.kinds = {
+    0x07: "QNAME",
+    0x0D: "QNAME_A",
+    0x0F: "RTQNAME",
+    0x10: "RTQNAME_A",
+    0x11: "RTQNAME_L",
+    0x12: "RTQNAME_LA",
+    0x09: "MULTINAME",
+    0x0E: "MULTINAME_A",
+    0x1B: "MULTINAME_L",
+    0x1C: "MULTINAME_LA"
+};
 
 Gordon.ABCMultiname.prototype = {
     parse: function(str) {
-        console.log("Parsing multiname");
+        var m = Gordon.ABCMultiname;
         this.kind = str.readUI8();
+        this.kindDescription = m.kinds[this.kind];
         switch(this.kind) {
-            case Gordon.ABCMultiname.QNAME:
-            case Gordon.ABCMultiname.QNAME_A:
+            case m.QNAME:
+            case m.QNAME_A:
                 this.nsIndex = str.readEncodedU32();
                 this.nameIndex = str.readEncodedU32();
                 break;
-            case Gordon.ABCMultiname.RTQNAME:
-            case Gordon.ABCMultiname.RTQNAME_A:
+            case m.RTQNAME:
+            case m.RTQNAME_A:
                 this.nameIndex = str.readEncodedU32();
                 break;
-            case Gordon.ABCMultiname.RTQNAME_L:
-            case Gordon.ABCMultiname.RTQNAME_LA:
+            case m.RTQNAME_L:
+            case m.RTQNAME_LA:
                 break;
-            case Gordon.ABCMultiname.MULTINAME:
-            case Gordon.ABCMultiname.MULTINAME_A:
+            case m.MULTINAME:
+            case m.MULTINAME_A:
                 this.nameIndex = str.readEncodedU32();
                 this.nsSetIndex = str.readEncodedU32();
                 if (this.nsSetIndex == 0) {
                     throw new Error("Multiname Validation: ns_set cannot be zero.");
                 }
                 break;
-            case Gordon.ABCMultiname.MULTINAME_L:
-            case Gordon.ABCMultiname.MULTINAME_LA:
+            case m.MULTINAME_L:
+            case m.MULTINAME_LA:
                 this.nsSetIndex = str.readEncodedU32();
                 if (this.nsSetIndex == 0) {
                     throw new Error("Multiname Validation: ns_set cannot be zero.");

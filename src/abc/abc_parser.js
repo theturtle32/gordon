@@ -6,7 +6,7 @@ Gordon.ABCParser = function(scriptName, flags, abcData) {
 };
 Gordon.ABCParser.prototype = {
     parse: function() {
-        var i = 0,
+        var len, i = 0,
             abcfile = this.abcfile = new Gordon.ABCFile(this.scriptName),
             str = new Gordon.ABCStream(this.abcData);
         abcfile.minorVersion = str.readUI16();
@@ -66,8 +66,12 @@ Gordon.ABCParser.prototype = {
         }
         
         var writer = new Gordon.JSScriptWriter(abcfile, "testNS");
-        writer.writeScript(abcfile.scripts[abcfile.scripts.length-1]);
-        console.log(writer.script);
+        
+        for (i=0, len=abcfile.methods.length; i<len; i++) {
+            writer.reset();
+            writer.writeMethod(abcfile.methods[i], abcfile.methodBodies[i]);
+            console.log(writer.script);
+        }
         
         return script;
     }
