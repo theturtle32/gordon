@@ -148,11 +148,19 @@ Gordon.extend(Gordon.ABCInstructions, {
         unshift: 167
     },
     byOpcode: {},
+    
+    /*  This object includes operand definitions for each opcode that has
+        operand(s) inline in the opcode stream.  It informs the opcode parser
+        how to read and resolve each operand. */
     operandDefinitions: {
         astype: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         call: [
@@ -164,7 +172,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callmethod: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "method_signature",
+                    poolSource: "methodSignatures"
+                }
             },
             {
                 name: "arg_count",
@@ -174,7 +186,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -184,7 +200,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callproplex: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -194,7 +214,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callpropvoid: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -204,7 +228,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callstatic: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "method_signature",
+                    poolSource: "methodSignatures"
+                }
             },
             {
                 name: "arg_count",
@@ -214,7 +242,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callsuper: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -224,7 +256,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         callsupervoid: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -234,7 +270,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         coerce: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         construct: [
@@ -246,7 +286,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         constructprop: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             },
             {
                 name: "arg_count",
@@ -266,7 +310,11 @@ Gordon.extend(Gordon.ABCInstructions, {
             },
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "registerName",
+                    poolSource: "strings"
+                }
             },
             {
                 name: "reg",
@@ -280,7 +328,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         debugfile: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "fileName",
+                    poolSource: "strings"
+                }
             }
         ],
         debugline: [
@@ -304,31 +356,51 @@ Gordon.extend(Gordon.ABCInstructions, {
         deleteproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
-        dxns: [
+        dxns: [ // sets the default XML namespace
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "xmlns",
+                    poolSource: "strings"
+                }
             }
         ],
         findproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         findpropstrict: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         getdescendants: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         getglobalslot: [
@@ -340,7 +412,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         getlex: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         getlocal: [
@@ -352,7 +428,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         getproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         getscopeobject: [
@@ -370,7 +450,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         getsuper: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         hasnext2: [
@@ -482,13 +566,21 @@ Gordon.extend(Gordon.ABCInstructions, {
         initproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         istype: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         jump: [
@@ -524,19 +616,31 @@ Gordon.extend(Gordon.ABCInstructions, {
         newcatch: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                method: {
+                    poolSource: "exceptions",
+                    referenceName: "exception_info"
+                }
             }
         ],
         newclass: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                abcfile: {
+                    poolSource: "classes",
+                    referenceName: "class_info"
+                }
             }
         ],
         newfunction: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                abcfile: {
+                    referenceName: "method_signature",
+                    poolSource: "methodSignatures"
+                }
             }
         ],
         newobject: [
@@ -554,19 +658,31 @@ Gordon.extend(Gordon.ABCInstructions, {
         pushdouble: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "double_value",
+                    poolSource: "doubles"
+                }
             }
         ],
         pushint: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "int_value",
+                    poolSource: "integers"
+                }
             }
         ],
         pushnamespace: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "namespace",
+                    poolSource: "namespaces"
+                }
             }
         ],
         pushshort: [
@@ -578,13 +694,21 @@ Gordon.extend(Gordon.ABCInstructions, {
         pushstring: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "string_value",
+                    poolSource: "strings"
+                }
             }
         ],
         pushuint: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "uint_value",
+                    poolSource: "uintegers"
+                }
             }
         ],
         setlocal: [
@@ -602,7 +726,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         setproperty: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ],
         setslot: [
@@ -614,7 +742,11 @@ Gordon.extend(Gordon.ABCInstructions, {
         setsuper: [
             {
                 name: "index",
-                type: "u30"
+                type: "u30",
+                constantPool: {
+                    referenceName: "multiname",
+                    poolSource: "multinames"
+                }
             }
         ]
     }

@@ -25,7 +25,7 @@ Gordon.JSScriptWriter.prototype = {
         this.writeMethod(scriptObj.initMethod, scriptObj.initMethodBody);
     },
     writeMethod: function(method, methodBody) {
-        var i, str;
+        var i, str, w = Gordon.ABCOpcodeWriters;
         
         var params = [];
         for (i=0; i < method.paramCount; i++) {
@@ -37,7 +37,7 @@ Gordon.JSScriptWriter.prototype = {
 
         for (var opIndex in methodBody.code) {
             var op = methodBody.code[opIndex];
-            var generator = this["gen_"+op.name];
+            var generator = w["gen_"+op.name];
             if (generator) {
                 generator.apply(this, [op]);
             }
@@ -64,50 +64,5 @@ Gordon.JSScriptWriter.prototype = {
         str += "opstack = vm.Stack.getOperandStack(" + methodBody.maxStack + "), " +
                "scopestack = vm.Stack.getScopeStack(" + methodBody.maxScopeDepth + ");";
         this.writeLine(str);
-    },
-    
-    // Opcode Writers
-    gen_getlocal_0: function() {
-        this.writeLine("opstack.push(register0);");
-    },
-    gen_getlocal_1: function() {
-        this.writeLine("opstack.push(register1);");
-    },
-    gen_getlocal_2: function() {
-        this.writeLine("opstack.push(register2);");
-    },
-    gen_getlocal_3: function() {
-        this.writeLine("opstack.push(register3);");
-    },
-    gen_setlocal_1: function() {
-        this.writeLine("register1 = opstack.pop();")
-    },
-    gen_setlocal_2: function() {
-        this.writeLine("register2 = opstack.pop();")
-    },
-    gen_setlocal_3: function() {
-        this.writeLine("register3 = opstack.pop();")
-    },
-    gen_setlocal_4: function() {
-        this.writeLine("register4 = opstack.pop();")
-    },
-    gen_pushscope: function() {
-        this.writeLine("scopestack.push(opstack.pop());");
-    },
-    gen_popscope: function() {
-        this.writeLine("scopestack.pop();");
-    },
-    gen_initproperty: function(o) {
-        var property = this.abcfile.constantPool.multinames[o.index];
-        this.writeLine("(function() { var value = opstack.pop(); var obj = opstack.pop(); obj['" + property.name + "'] = value; })();");
-    },
-    gen_returnvoid: function() {
-        this._writeMethodClose();
-    },
-    gen_pushbyte: function(o) {
-        this.writeLine("opstack.push(" + o.byte_value + ");");
-    },
-    gen_add: function() {
-        this.writeLine("opstack.push(opstack.pop() + opstack.pop());");
     }
 };

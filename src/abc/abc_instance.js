@@ -36,7 +36,7 @@ Gordon.ABCInstance.prototype = {
         }
         
         this.instanceInitializerId = str.readEncodedU32();
-        this.instanceInitializer = abcfile.methods[this.instanceInitializerId];
+        this.instanceInitializer = abcfile.methodSignatures[this.instanceInitializerId];
         this.traitCount = str.readEncodedU32();
         this.traits = [];
         for (i=0; i < this.traitCount; i ++) {

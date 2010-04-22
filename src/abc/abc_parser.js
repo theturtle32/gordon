@@ -16,11 +16,11 @@ Gordon.ABCParser.prototype = {
         abcfile.constantPool.parse(str);
 
         abcfile.methodCount = str.readEncodedU32();
-        abcfile.methods = [];
+        abcfile.methodSignatures = [];
         for (i=0; i < abcfile.methodCount; i++) {
-            var method = new Gordon.ABCMethodSignature();
-            method.parse(str, abcfile);
-            abcfile.methods.push(method);
+            var methodSignature = new Gordon.ABCMethodSignature();
+            methodSignature.parse(str, abcfile);
+            abcfile.methodSignatures.push(methodSignature);
         }
         
         abcfile.metadataCount = str.readEncodedU32();
@@ -58,6 +58,8 @@ Gordon.ABCParser.prototype = {
         for (i=0; i < abcfile.methodBodyCount; i++) {
             var methodBody = new Gordon.ABCMethodBody();
             methodBody.parse(str, abcfile);
+            // associate this methodBody with the correct methodSignature
+            abcfile.methodSignatures[i].methodBody = methodBody;
             abcfile.methodBodies.push(methodBody);
         }
         
@@ -67,9 +69,9 @@ Gordon.ABCParser.prototype = {
         
         var writer = new Gordon.JSScriptWriter(abcfile, "testNS");
         
-        for (i=0, len=abcfile.methods.length; i<len; i++) {
+        for (i=0, len=abcfile.methodSignatures.length; i<len; i++) {
             writer.reset();
-            writer.writeMethod(abcfile.methods[i], abcfile.methodBodies[i]);
+            writer.writeMethod(abcfile.methodSignatures[i], abcfile.methodBodies[i]);
             console.log(writer.script);
         }
         

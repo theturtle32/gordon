@@ -9,6 +9,7 @@ Gordon.ABCMethodSignature = function() {
     this.options = null;
     this.paramNameIds = null;
     this.paramNames = null;
+    this.methodBody = null;
 };
 Gordon.ABCMethodSignature.flags = {
   NEED_ARGUMENTS: 0x01,
@@ -20,14 +21,18 @@ Gordon.ABCMethodSignature.flags = {
 };
 Gordon.ABCMethodSignature.prototype = {
     parse: function(str, abcfile) {
-        var i,
+        var i, index
             f = Gordon.ABCMethodSignature.flags,
             pool = abcfile.constantPool;
         this.paramCount = str.readEncodedU32();
-        this.returnType = str.readEncodedU32();
+        this.returnTypeIndex = str.readEncodedU32();
+        this.returnType = pool.multinames[this.returnTypeIndex];
+        this.paramTypeIndices = [];
         this.paramTypes = [];
         for (i=0; i < this.paramCount; i ++) {
-            paramTypes.push(str.readEncodedU32());
+            index = str.readEncodedU32();
+            this.paramTypeIndices.push(index);
+            this.paramTypes.push(pool.multinames[index]);
         }
         this.nameIndex = str.readEncodedU32();
         this.name = pool.strings[this.nameIndex];

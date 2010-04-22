@@ -2,6 +2,7 @@ Gordon.ABCTrait = function() {
     this.nameIndex = null;
     this.name = null;
     this.kind = null;
+    this.kindDescription = null;
     this.data = {
         traitSlot: null,
         traitClass: null,
@@ -28,6 +29,18 @@ Gordon.extend(Gordon.ABCTrait, {
    TRAIT_FUNCTION: 0x5,
    TRAIT_CONST: 0x6
 });
+Gordon.ABCTrait.kindLookup = {
+    0x1: "ATTR_FINAL",
+    0x2: "ATTR_OVERRIDE",
+    0x4: "ATTR_METADATA",
+    0x0: "TRAIT_SLOT",
+    0x1: "TRAIT_METHOD",
+    0x2: "TRAIT_GETTER",
+    0x3: "TRAIT_SETTER",
+    0x4: "TRAIT_CLASS",
+    0x5: "TRAIT_FUNCTION",
+    0x6: "TRAIT_CONST"
+};
 Gordon.ABCTrait.prototype = {
     parse: function(str, abcfile) {
         var i, attr, traitType,
@@ -35,6 +48,7 @@ Gordon.ABCTrait.prototype = {
         this.nameIndex = str.readEncodedU32();
         this.name = abcfile.constantPool.multinames[this.nameIndex];
         this.kind = str.readUI8();
+        this.kindDescription = Gordon.ABCTrait.kindLookup[(this.kind >> 4) & 0x0F];
         
         this.metadata = [];
         
@@ -146,10 +160,10 @@ Gordon.ABCTrait.prototype = {
     _readTraitFunction: function(str, abcfile) {
         var tf = this.data.traitFunction = {
             slotId: str.readEncodedU32(),
-            // functioni is index into the 'methods' array of the ABCFile
+            // functioni is index into the 'methodSignatures' array of the ABCFile
             functioni: str.readEncodedU32()
         };
-        tf.functionDef = abcfile.methods[tf.functioni];
+        tf.functionDef = abcfile.methodSignatures[tf.functioni];
     },
     _readTraitMethod: function(str, abcfile) {
         var tm = this.data.traitMethod = {
@@ -161,9 +175,9 @@ Gordon.ABCTrait.prototype = {
                 optimization.
             */
             dispId: str.readEncodedU32(),
-            // methodi is index into the 'methods' array of the ABCFile
+            // methodi is index into the 'methodSignatures' array of the ABCFile
             methodi: str.readEncodedU32()
         }
-        tm.methodDef = abcfile.methods[tm.methodi];
+        tm.methodDef = abcfile.methodSignatures[tm.methodi];
     }
 };

@@ -1,5 +1,5 @@
 Gordon.ABCConstantPool = function() {
-
+    this.init();
 };
 
 var cp = Gordon.ABCConstantPool;
@@ -48,8 +48,7 @@ Gordon.ABCConstantPool.prototype = {
     },
     parse: function(str) {
         var i, len;
-
-        this.init();
+        
         len = str.readEncodedU32();
         for (i = 1; i < len; i ++) {
             var s32value = str.readEncodedU32();
@@ -62,6 +61,7 @@ Gordon.ABCConstantPool.prototype = {
         }
         
         len = str.readEncodedU32();
+        console.log("Double count: " + len);
         for (i = 1; i < len; i ++) {
             console.log("Reading double");
             this.doubles.push(str.readDouble());

@@ -27,6 +27,7 @@ base_names = [
   'abc/abc_exception',
   'abc/abc_instructions',
   'abc/js_scriptwriter',
+  'abc/opcode_writers',
   'abc/vm/runtime',
   'abc/vm/instructions'
 ]

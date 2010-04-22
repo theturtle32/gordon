@@ -72,7 +72,12 @@ Gordon.ABCMultiname.prototype = {
     },
     resolveConnections: function(constantPool) {
         if (this.nameIndex !== null) {
-            this.name = constantPool.strings[this.nameIndex];
+            if (this.nameIndex == 0) {
+                this.name = "*";
+            }
+            else {
+                this.name = constantPool.strings[this.nameIndex];
+            }
         }
         if (this.nsIndex !== null) {
             this.namespace = constantPool.namespaces[this.nsIndex];

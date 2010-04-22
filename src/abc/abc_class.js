@@ -1,5 +1,6 @@
 Gordon.ABCClass = function() {
     this.classInitializerIndex = null; // cinit
+    this.classInitializer = null;
     this.traitCount = null;
     this.traits = null;
 };
@@ -13,6 +14,7 @@ Gordon.ABCClass.prototype = {
     parse: function(str, abcfile) {
         this.classInitializerIndex = str.readEncodedU32();
         this.traitCount = str.readEncodedU32();
+        this.classInitializer = abcfile.methodSignatures[this.classInitializerIndex];
 
         this.traits = [];
         for (var i=0; i < this.traitCount; i ++) {
