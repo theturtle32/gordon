@@ -107,8 +107,10 @@ Gordon.ABCTrait.prototype = {
         if (ts.vIndex != 0) {
             ts.vKind = str.readUI8();
             var cp = Gordon.ABCConstantPool;
+            ts.vKindDescription = cp.constantLookup[ts.vKind];
             switch (ts.vKind) {
                 case 0: // the "any" type
+                    ts.vKindDescription = "*";
                     ts.value = "*";
                     break;
                 case cp.CONSTANT_INT:

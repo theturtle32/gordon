@@ -34,6 +34,12 @@ Gordon.ABCOpcodeWriters = {
         var property = this.abcfile.constantPool.multinames[o.index];
         this.writeLine("(function() { var value = opstack.pop(); var obj = opstack.pop(); obj['" + property.name + "'] = value; })();");
     },
+    gen_callpropvoid: function(o) {
+        this.writeLine("callPropVoid(\"" + o.multiname.name + "\");");
+    },
+    gen_callproperty: function(o) {
+        this.writeLine("callPropVoid(\"" + o.multiname.name + "\");");
+    },
     gen_returnvoid: function() {
         this._writeMethodClose();
     },
