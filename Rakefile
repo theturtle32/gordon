@@ -4,6 +4,9 @@ dist_dir = 'dist'
 build_dir = 'build'
 base_names = [
   'base',
+  'decompile',
+  'inflate',
+  'lib',
   'object_utils',
   'movie',
   'parser',
@@ -45,7 +48,7 @@ task :gordon do
   sh 'cat ' + File.join(vendor_dir, '*') + ' > ' + vendor
   sh 'mkdir -p ' + dist_dir
   sh 'cat ' + intro + ' > ' + output_file
-  sh 'for file in ' + base_files.join(' ') + "; do echo | cat $file - | sed 's/^/\t/' >> " + output_file + '; done'
+  sh 'for file in ' + base_files.join(' ') + "; do echo | cat $file - | sed 's/^/    /' >> " + output_file + '; done'
   sh 'cat ' + outro + ' >> ' + output_file
 end
 
