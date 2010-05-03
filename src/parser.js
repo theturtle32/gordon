@@ -67,7 +67,7 @@
                     // Execute the proper handler for this tag type
                     if(this[handl]){ 
                         if (Gordon.debug) {console.log("Handling tag " + code + ": " + Gordon.tagNames[code]);}
-                        this[handl](s.tell(), len);
+                        this[handl](s.offset, len);
                     }
                     // If we don't have one, skip the tag.
                     else{ 
@@ -386,7 +386,7 @@
                         depth: depth,
                         matrix: s.readMatrix()
                     };
-                if(s.tell() - offset != len){
+                if(s.offset - offset != len){
                     var filterId = "x_" + (++currPrivateId);
                     this.ondata({
                         type: "filter",
@@ -427,7 +427,7 @@
             },
             
             _readJpeg: function(dataSize){
-                var offset = s.tell(),
+                var offset = s.offset(),
                     width = height = 0;
                 for(var i = 0; i < dataSize; i += 2){
                     var hdr = s.readUI16(true),
@@ -710,7 +710,7 @@
                     b = Gordon.bitmapFormats;
                 if(format == b.COLORMAPPED){ var colorTableSize = s.readUI8(); }
                 s.seek(2);
-                var d = zip_inflate(s.readString(len - (s.tell() - offset)));
+                var d = zip_inflate(s.readString(len - (s.offset - offset)));
                 switch(format){
                     case b.COLORMAPPED:
                         var colorTable = [];
