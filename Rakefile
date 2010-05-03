@@ -4,9 +4,7 @@ dist_dir = 'dist'
 build_dir = 'build'
 base_names = [
   'base',
-  'decompile',
   'inflate',
-  'lib',
   'object_utils',
   'movie',
   'parser',
